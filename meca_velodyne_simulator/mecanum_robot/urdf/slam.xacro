@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+	name="slam">
+
+	<xacro:macro name="default_inertial" params="mass">
+               <inertial>
+                       <mass value="${mass}" />
+                       <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+                                iyy="1.0" iyz="0.0"
+                                izz="1.0" />
+               </inertial>
+	</xacro:macro>
+
+  <xacro:arg name="laser_enabled" default="true" />
+  <xacro:arg name="gpu" default="false"/>
+  <xacro:property name="gpu" value="$(arg gpu)" />
+
+  <link name="base_footprint">
+    <visual>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+	<origin rpy="0 0 0" xyz="0 0 0"/>
+      </visual>
+      <xacro:default_inertial mass="0.0001"/>
+  </link>
+
+  <xacro:include filename="$(find mecanum_robot)/urdf/robot.gazebo" />
+
+  <gazebo reference="base_footprint">
+    <material>Gazebo/Green</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <!--VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points" hz="10" samples="440" gpu="${gpu}"-->
+  <VLP-16 parent="base_link" name="velodyne" topic="/points_raw" hz="10" samples="440" gpu="${gpu}">
+    <origin xyz="0 0 0.4" rpy="0 0 0" />
+  </VLP-16>
+
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0" />
+    <parent link="base_footprint" />
+    <child link="base_link" />
+  </joint>
+
+  <!-- the model --> 
+  <link name="base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/base_link.STL"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/base_link.STL"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="500"/>
+  </link>
+
+
+  <link name="wheel_1">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_1.STL"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_1.STL"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="50"/>
+  </link>
+
+  <link name="wheel_2">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_2.STL"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_2.STL"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="50"/>
+  </link>
+
+  <link name="wheel_3">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_3.STL"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_3.STL"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="50"/>
+  </link>
+
+  <link name="wheel_4">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_4.STL"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://mecanum_robot/meshes/wheel_4.STL"/>
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="50"/>
+  </link>
+
+  <joint name="base_to_wheel1" type="continuous">
+    <origin rpy="-1.5707963267949 -0.493727385332021 3.14159265358979" xyz="0.241580962730011 0.220310954626146 -0.00777631961060583"/>
+    <parent link="base_link"/>
+    <child link="wheel_1"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <joint name="base_to_wheel2" type="continuous">
+    <origin rpy="-1.5707963267949 -0.13421158154141 3.14159265358979" xyz="-0.241580962730011 0.222774891674313 -0.00777631961060638"/>
+    <parent link="base_link"/>
+    <child link="wheel_2"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <joint name="base_to_wheel3" type="continuous">
+    <origin rpy="-1.5707963267949 1.14145335878862 -3.14159265358979" xyz="0.241580962730011 -0.220116812236678 -0.00777631961060581"/>
+    <parent link="base_link"/>
+    <child link="wheel_3"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <joint name="base_to_wheel4" type="continuous">
+    <origin rpy="1.57079632679489 1.53950981744456 -1.95644510412254E-15" xyz="-0.241580962730011 -0.223110015995848 -0.00777631961060629"/>
+    <parent link="base_link"/>
+    <child link="wheel_4"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+<!-- Drive controller -->
+<gazebo>
+  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+    <updateRate>100.0</updateRate>
+    <robotNamespace></robotNamespace>
+    <leftFrontJoint>base_to_wheel1</leftFrontJoint>
+    <rightFrontJoint>base_to_wheel3</rightFrontJoint>
+    <leftRearJoint>base_to_wheel2</leftRearJoint>
+    <rightRearJoint>base_to_wheel4</rightRearJoint>
+    <wheelSeparation>0.53</wheelSeparation>
+    <wheelDiameter>0.16</wheelDiameter>
+    <commandTopic>cmd_vel</commandTopic>
+    <odometryTopic>odom</odometryTopic>
+    <robotBaseFrame>base_footprint</robotBaseFrame>
+    <odometryFrame>odom</odometryFrame>
+    <torque>500</torque>
+    <topicName>cmd_vel</topicName>
+    <broadcastTF>1</broadcastTF>
+  </plugin>
+</gazebo>
+
+</robot>
+

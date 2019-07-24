@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find omni_gazebo)/worlds/clearpath_playpen.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+<!-- BEGIN ROBOT 1-->
+  <group ns="robot1">
+    <param name="robot_description"
+            command="$(find xacro)/xacro.py
+    $(find omni_description)/urdf/cheng.urdf.xacro ns:=robot1"/> 
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/> 
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" /> 
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model robot1 -param robot_description -x -1 -y 0 -z 0"/>
+   </group>
+
+<!-- BEGIN ROBOT 2-->
+  <group ns="robot2">
+    <param name="robot_description"
+            command="$(find xacro)/xacro.py
+    $(find omni_description)/urdf/cheng.urdf.xacro ns:=robot2"/> 
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/> 
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" /> 
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model robot2 -param robot_description -x -1 -y 1 -z 0"/>
+   </group>
+
+<!-- BEGIN ROBOT 3-->
+  <group ns="robot3">
+    <param name="robot_description"
+            command="$(find xacro)/xacro.py
+    $(find omni_description)/urdf/cheng.urdf.xacro ns:=robot3"/> 
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/> 
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" /> 
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -model robot3 -param robot_description -x -1 -y 2 -z 0"/>
+   </group>
+
+
+</launch>
